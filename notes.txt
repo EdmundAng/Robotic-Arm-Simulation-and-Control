@@ -1,0 +1,44 @@
+Current Task:      
+    -> forward kinematics, given the joint angles, where is the end effector?
+        - the end effector coordinate is actually joint 2 coordinates (among joint 0, 1, 2)
+        - already doing this, just display joint 2 coordinates?
+        - make a function to verify joint angles, then compute the end effector coordinate, if valid, return it, else revert to last position
+        - limit joint angles, limit work area
+            - make a home/zero position
+                - initial positions match midpoint of joint limit range
+            - need to establish what does 0 degree mean in my coordinate system?
+                - relative to horizontal axis, y=0
+            - link2 angle needs to offset by how much link1 angle moves (link2 relative to link1)
+                - "angle = slider2.val + slider1.val"
+            - simulate the extreme configurations (prevent linkages merging/colliding)
+                - limit joint angles, i.e. JOINT_LIMITS
+            - assume y=0 as work area boundary, y<0 is out of bounds
+                - no issue for link1 as its joint limits is same as the work area limits
+                - need to make link2 cannot pass outside the work area
+                    - freeze arm when any joint (includes end-effector) passes boundary
+                    - clamp slider value when joints out of bounds (two-way update)? optional...
+        -> translate code to mathematical equations, modelling (kinematics)
+            -> homogeneous transformation matrices or Denavit-Hartenberg parameters?
+    -> put to Git, no need to push to remote yet
+
+Future Task:
+    - inverse kinematics, interactive, can select target position
+    - feedback control
+    - motion control, smooth motion to target
+
+Task Done:
+    - create venv
+    - draw coordinates
+    - draw lines with markers
+    - draw cartesian coordinate system
+        - negative values included
+    - auto-restart plot window upon edit using watchdog library
+        -"watchmedo auto-restart --patterns="*.py" --recursive -- .venv\Scripts\python.exe main.py"
+    - fix figure size, background color, window position
+    - control visualisation of linkages by:
+        - fixing link length, this is the scalar
+        - need to also provide a direction/heading/angle
+        - then can compute joint coordinates
+    - animate the plot, changing joint angles
+    - use a way to interact and adjust joint angle manually
+        - try matplotlib slider widget, map value directly to joint angle
