@@ -1,30 +1,15 @@
-Current Task:      
-    -> forward kinematics, given the joint angles, where is the end effector?
-        - the end effector coordinate is actually joint 2 coordinates (among joint 0, 1, 2)
-        - already doing this, just display joint 2 coordinates?
-        - make a function to verify joint angles, then compute the end effector coordinate, if valid, return it, else revert to last position
-        - limit joint angles, limit work area
-            - make a home/zero position
-                - initial positions match midpoint of joint limit range
-            - need to establish what does 0 degree mean in my coordinate system?
-                - relative to horizontal axis, y=0
-            - link2 angle needs to offset by how much link1 angle moves (link2 relative to link1)
-                - "angle = slider2.val + slider1.val"
-            - simulate the extreme configurations (prevent linkages merging/colliding)
-                - limit joint angles, i.e. JOINT_LIMITS
-            - assume y=0 as work area boundary, y<0 is out of bounds
-                - no issue for link1 as its joint limits is same as the work area limits
-                - need to make link2 cannot pass outside the work area
-                    - freeze arm when any joint (includes end-effector) passes boundary
-                    - clamp slider value when joints out of bounds (two-way update)? optional...
-        -> translate code to mathematical equations, modelling (kinematics)
-            -> homogeneous transformation matrices or Denavit-Hartenberg parameters?
-    -> put to Git, no need to push to remote yet
+Current Task:
+    - translate code to mathematical equations, modelling (kinematics)
+        - currently code is using trigonometric/geometric approach, works for simple 2D planar linkages
+        -> study converting to transformation matrix or DH parameters method
+    - inverse kinematics, interactive, can select target position
 
 Future Task:
-    - inverse kinematics, interactive, can select target position
     - feedback control
-    - motion control, smooth motion to target
+    - try recreate in MuJoCo
+    - analyse dynamics
+    - motion/trajectory control, smooth motion to target
+    - try using homogeneous transformation matrices and Denavit-Hartenberg parameters? more useful when complexity increases (3D, more DOF, track orientation)
 
 Task Done:
     - create venv
@@ -42,3 +27,24 @@ Task Done:
     - animate the plot, changing joint angles
     - use a way to interact and adjust joint angle manually
         - try matplotlib slider widget, map value directly to joint angle
+    - track to Git
+    - limit joint angles, limit work area
+        - make a home/zero position
+            - initial positions match midpoint of joint limit range
+        - need to establish what does 0 degree mean in my coordinate system?
+            - relative to horizontal axis, y=0
+        - link2 angle needs to offset by how much link1 angle moves (link2 relative to link1)
+            - "angle = slider2.val + slider1.val"
+        - simulate the extreme configurations (prevent linkages merging/colliding)
+            - limit joint angles, i.e. JOINT_LIMITS
+        - assume y=0 as work area boundary, y<0 is out of bounds
+            - no issue for link1 as its joint limits is same as the work area limits
+            - need to make link2 cannot pass outside the work area
+                - freeze arm when any joint (includes end-effector) passes boundary
+                - clamp slider value when joints out of bounds (two-way update)? optional...
+    - make a function to verify joint angles, then compute the end effector coordinate, if valid, return it, else revert to last position
+    - forward kinematics, given the joint angles, where is the end effector?
+        - the end effector coordinate is actually joint 2 coordinates (among joint 0, 1, 2)
+        - already doing this, just display joint 2 coordinates?
+    - visualise/plot/map the work boundary/envelope?
+        - LLM-generated function: "plot_work_envelope()"

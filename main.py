@@ -7,6 +7,10 @@ import numpy as np
 from matplotlib.widgets import Slider
 import itertools
 
+LINK_LENGTHS = [2,1.5] # define link lengths
+JOINT_LIMITS = [(0,180), (-75,75)] # relative to horizontal axis (0 deg)
+joints = [(0,0)] * (len(LINK_LENGTHS) + 1) # initialise joints based on number of link + origin coordinate
+
 def move_figure_to_monitor(fig, monitor_index=1, x_offset=0, y_offset=0):
     """
     Moves a figure to a specific monitor index.
@@ -43,10 +47,6 @@ def move_figure_to_monitor(fig, monitor_index=1, x_offset=0, y_offset=0):
         except AttributeError:
             print(f"Positioning not supported natively on backend: {backend}")
 
-LINK_LENGTHS = [2,1] # define link lengths
-JOINT_LIMITS = [(0,180), (-60,60)] # relative to horizontal axis (0 deg)
-joints = [(0,0)] * (len(LINK_LENGTHS) + 1) # initialise joints based on number of link + origin coordinate
-
 def getJoint(idxLink, angle):
     '''
     function to calculate and save joint coordinates
@@ -73,6 +73,40 @@ def animate(i):
     line.set_data(x, y)
     return line,
 
+def plot_work_envelope(ax, step=1):
+    """Plot reachable end-effector positions given JOINT_LIMITS and the y >= 0 boundary."""
+    th1 = np.arange(JOINT_LIMITS[0][0], JOINT_LIMITS[0][1] + step, step) # instead of slider, it just generates all points along the joint limit range
+    th2 = np.arange(JOINT_LIMITS[1][0], JOINT_LIMITS[1][1] + step, step)
+    T1, T2 = np.meshgrid(np.radians(th1), np.radians(th2)) # builds every combination of th1 and th2, the specific combination is read at each position/index, e.g. combination 1 = (T1[0,0], T2[0,0]) = (angle1, angle2)
+
+    L1, L2 = LINK_LENGTHS
+    # forward kinematics (joint 2 is relative to link 1, same as your sliders)
+    x1, y1 = L1 * np.cos(T1), L1 * np.sin(T1)
+    x2, y2 = x1 + L2 * np.cos(T1 + T2), y1 + L2 * np.sin(T1 + T2)
+
+    # same validity rule as animate(): every joint must have y >= 0
+    valid = (y1 >= 0) & (y2 >= 0) # make a boolean mask
+
+    # plot the end effector points
+    # use boolean mask on end effector coordinates
+    ax.scatter(x2[valid], y2[valid], s=2, color='cyan', alpha=0.25, zorder=1,
+               label='Work envelope')
+
+    # optional: trace the boundary curves (the edges of the joint-limit rectangle)
+    def edge(t1, t2):
+        t1, t2 = np.radians(t1), np.radians(t2)
+        x = L1*np.cos(t1) + L2*np.cos(t1 + t2)
+        y = L1*np.sin(t1) + L2*np.sin(t1 + t2)
+        m = y >= 0
+        ax.plot(x[m], y[m], color='yellow', lw=1, zorder=2)
+
+    lo2, hi2 = JOINT_LIMITS[1]
+    lo1, hi1 = JOINT_LIMITS[0]
+    edge(th1, np.full_like(th1, lo2, dtype=float))   # joint 2 at min
+    edge(th1, np.full_like(th1, hi2, dtype=float))   # joint 2 at max
+    edge(np.full_like(th2, lo1, dtype=float), th2)   # joint 1 at min
+    edge(np.full_like(th2, hi1, dtype=float), th2)   # joint 1 at max
+
 plt.style.use('dark_background')            # Apply the built-in dark theme globally
 plt.rcParams['figure.figsize'] = [10, 6]    # Set default window size to 10 inches wide by 6 inches high globally
 fig, ax = plt.subplots()
@@ -87,12 +121,12 @@ ax.set_position([0.05, 0.15, 0.9, 0.83])   # [left, bottom, width, height]
 move_figure_to_monitor(fig, monitor_index=1, y_offset=-100) # Move figure to your secondary monitor (Index 1)
 
 # Slider 1
-ax_slider1 = fig.add_axes([0.2, 0.08, 0.6, 0.04]) # left edge, bottom edge, width, height (relative)
+ax_slider1 = fig.add_axes([0.15, 0.08, 0.8, 0.04]) # left edge, bottom edge, width, height (relative)
 lo, hi = JOINT_LIMITS[0]
 slider1 = Slider(ax_slider1, 'Joint 1 (deg)', lo, hi, valinit=90, valstep=1)
 
 # Slider 2
-ax_slider2 = fig.add_axes([0.2, 0.02, 0.6, 0.04])
+ax_slider2 = fig.add_axes([0.15, 0.02, 0.8, 0.04])
 lo, hi = JOINT_LIMITS[1]
 slider2 = Slider(ax_slider2, 'Joint 2 (deg)', lo, hi, valinit=0, valstep=1)
 
@@ -104,5 +138,7 @@ ani = animation.FuncAnimation(
     blit=True,
     cache_frame_data=False
 )
+
+plot_work_envelope(ax)
 
 plt.show()
