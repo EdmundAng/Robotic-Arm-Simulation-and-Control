@@ -1,7 +1,4 @@
 Current Task:
-    - translate code to mathematical equations, modelling (kinematics)
-        - currently code is using trigonometric/geometric approach, works for simple 2D planar linkages
-        -> study converting to transformation matrix or DH parameters method
     - inverse kinematics, interactive, can select target position
 
 Future Task:
@@ -48,3 +45,40 @@ Task Done:
         - already doing this, just display joint 2 coordinates?
     - visualise/plot/map the work boundary/envelope?
         - LLM-generated function: "plot_work_envelope()"
+    - translate code to mathematical equations, modelling (kinematics)
+        - currently code is using trigonometric/geometric approach, works for simple 2D planar linkages
+        - study converting to transformation matrix or DH parameters method
+            '''
+                # 2-DOF Planar Arm (homogenous matrix method)
+
+                import numpy as np
+
+                def trans_matrix(theta_deg, length):
+                    """Homogeneous transform for one revolute joint + link (planar)."""
+                    t = np.radians(theta_deg)
+                    c, s = np.cos(t), np.sin(t)
+                    return np.array([
+                        [c, -s, length * c],
+                        [s,  c, length * s],
+                        [0,  0, 1]
+                    ])
+
+                def forward_kinematics(angles_deg):
+                    """Return list of joint (x, y) positions, base included."""
+                    T = np.eye(3)
+                    pts = [(0.0, 0.0)]
+                    for theta, L in zip(angles_deg, LINK_LENGTHS):
+                        T = T @ trans_matrix(theta, L)     # chain transforms
+                        pts.append((T[0, 2], T[1, 2]))     # position = translation column
+                    return pts
+
+                def animate(i):
+                    new_joints = forward_kinematics([slider1.val, slider2.val])  # RELATIVE angles
+
+                    if all(y >= 0 for _, y in new_joints):
+                        joints[:] = new_joints
+
+                    x, y = zip(*joints)
+                    line.set_data(x, y)
+                    return line,
+            '''
