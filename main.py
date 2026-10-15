@@ -8,8 +8,7 @@ from matplotlib.widgets import Slider
 import itertools
 
 LINK_LENGTHS = [2,1.5] # define link lengths
-JOINT_LIMITS = [(0,180), (-75,75)] # relative to horizontal axis (0 deg)
-joints = [(0,0)] * (len(LINK_LENGTHS) + 1) # initialise joints based on number of link + origin coordinate
+JOINT_LIMITS = [(0,180), (-90,90)] # angles relative to previous joint
 
 def move_figure_to_monitor(fig, monitor_index=1, x_offset=0, y_offset=0):
     """
@@ -47,30 +46,77 @@ def move_figure_to_monitor(fig, monitor_index=1, x_offset=0, y_offset=0):
         except AttributeError:
             print(f"Positioning not supported natively on backend: {backend}")
 
-def getJoint(idxLink, angle):
-    '''
-    function to calculate and save joint coordinates
-    idxLink= 1 (first link), 2 (second link),...(1-indexed)
-    angle in degree
-    '''
-    d = LINK_LENGTHS[idxLink-1]
-    angle_rad = math.radians(angle)
-    x_prev, y_prev = joints[idxLink-1] # previous joint as reference
-    x, y = d*math.cos(angle_rad) + x_prev, d*math.sin(angle_rad) + y_prev
-    joints[idxLink] = (x, y)
+def forward_kinematics(angles_deg):
+    L1, L2 = LINK_LENGTHS
+    T1, T2 = (math.radians(a) for a in angles_deg)
+    x1, y1 = L1 * np.cos(T1), L1 * np.sin(T1)
+    x2, y2 = x1 + L2 * np.cos(T1 + T2), y1 + L2 * np.sin(T1 + T2)
+    return [(0,0), (x1,y1), (x2,y2)]
+
+clicked_pos = (0, sum(LINK_LENGTHS)) # initialize home position as target
+def inverse_kinematics():
+    L1, L2 = LINK_LENGTHS
+    lo_1, hi_1 = JOINT_LIMITS[0][0], JOINT_LIMITS[0][1]
+    lo_2, hi_2 = JOINT_LIMITS[1][0], JOINT_LIMITS[1][1]
+    x2, y2 = clicked_pos
+
+    # compute first configuration
+    line_a_squared = x2*x2 + y2*y2 # Euclidean distance
+    angle_A = np.acos((L1*L1 + L2*L2 - line_a_squared) / (2 * L1 * L2)) # Law of Cosine
+    angle_C = np.acos((line_a_squared + L1*L1 - L2*L2) / (2 * np.sqrt(line_a_squared) * L1)) # Law of Cosine
+    T2 = math.pi - angle_A # Supplementary angle, T2 found
+    T1 = np.acos(x2 / np.sqrt(line_a_squared)) - angle_C # just another PT formula
+
+    # account for inverted elbow configuration (alternate joint configuration for same target position)
+    T1_inv = np.acos(x2 / np.sqrt(line_a_squared)) + angle_C
+    T2_inv = -T2
+    
+    # validate joint angles here
+    # if first config joint angles are valid, try first configuration
+    if x2 <= 0 and (lo_1 <= math.degrees(T1) <= hi_1) and (lo_2 <= math.degrees(T2) <= hi_2): 
+        x1, y1 = x2 - L2 * np.cos(T1 + T2), y2 - L2 * np.sin(T1 + T2) # first configuration
+        if y1 < 0 or y2 < 0: # work boundary check
+            # print("Valid joints config, but out of bounds!")
+            print("Invalid joint config!")
+            return [(0,-1)]
+        else:           
+            print(f"Joint angles(deg): T1: {math.degrees(T1):.3f}, T2: {math.degrees(T2):.3f}")
+            return [(0,0), (x1,y1), (x2,y2)]
+    
+    # else try inverted elbow configuration
+    elif x2 > 0 and (lo_1 <= math.degrees(T1_inv) <= hi_1) and (lo_2 <= math.degrees(T2_inv)): 
+        x1, y1 = L1 * np.cos(T1_inv), L1 * np.sin(T1_inv) # inverted configuration
+        if y1 < 0 or y2 < 0: # work boundary check
+            # print("Valid joints config, but out of bounds!")
+            print("Invalid joint config!")
+            return [(0,-1)]
+        else:
+            print(f"Joint angles: T1: {math.degrees(T1_inv):.3f}, T2: {math.degrees(T2_inv):.3f}")
+            return [(0,0), (x1,y1), (x2,y2)]
+    
+    # else render it invalid
+    else:
+        print("Invalid joint config!")
+        return [(0,-1)]
+
+def on_click(event):
+    global clicked_pos
+    # Check for Left Double Click only in graph axes only
+    if event.inaxes and event.dblclick and event.button == 1:
+        print(f"Left click detected at: X={event.xdata:.3f}, Y={event.ydata:.3f}")
+        clicked_pos = (event.xdata, event.ydata)
 
 def animate(i):
-    old_config = joints.copy() # save old config as shallow copy
+    # use either forward or inverse kinematics, not simultaneously
+    # joints = forward_kinematics([slider1.val, slider2.val])
+    joints = inverse_kinematics()
     
-    getJoint(idxLink=1, angle=slider1.val)
-    getJoint(idxLink=2, angle=slider2.val + slider1.val)
-
-    # add a function here to validate if all joints are within work area boundary
-    if any(y < 0 for _, y in joints):   # if any joint is out of bounds
-        joints[:] = old_config          # restore old config
-
-    x, y = zip(*joints)
-    line.set_data(x, y)
+    # validate joints are within boundary (boundary check, redundancy)
+    if all(y >= 0 for _, y in joints): # only commit if all joints valid
+        print(f"End effector at: ({joints[-1][0]:.3f}, {joints[-1][1]:.3f})\n")
+        x, y = zip(*joints)
+        line.set_data(x, y)
+    
     return line,
 
 def plot_work_envelope(ax, step=1):
@@ -108,7 +154,7 @@ def plot_work_envelope(ax, step=1):
     edge(np.full_like(th2, hi1, dtype=float), th2)   # joint 1 at max
 
 plt.style.use('dark_background')            # Apply the built-in dark theme globally
-plt.rcParams['figure.figsize'] = [10, 6]    # Set default window size to 10 inches wide by 6 inches high globally
+plt.rcParams['figure.figsize'] = [15, 9]    # Set default window size to 10 inches wide by 6 inches high globally
 fig, ax = plt.subplots()
 line, = ax.plot([], [], 'o-r')
 ax.set_xlim(-6, 6)
@@ -118,7 +164,7 @@ ax.set_xticks(np.arange(-6, 7, 1))
 ax.set_yticks(np.arange(-2, 5, 1))
 ax.grid(True, color='#333333', linestyle='--', linewidth=0.5)
 ax.set_position([0.05, 0.15, 0.9, 0.83])   # [left, bottom, width, height]
-move_figure_to_monitor(fig, monitor_index=1, y_offset=-100) # Move figure to your secondary monitor (Index 1)
+move_figure_to_monitor(fig, monitor_index=1, y_offset=-80) # Move figure to your secondary monitor (Index 1)
 
 # Slider 1
 ax_slider1 = fig.add_axes([0.15, 0.08, 0.8, 0.04]) # left edge, bottom edge, width, height (relative)
@@ -140,5 +186,7 @@ ani = animation.FuncAnimation(
 )
 
 plot_work_envelope(ax)
+
+fig.canvas.mpl_connect('button_press_event', on_click)
 
 plt.show()

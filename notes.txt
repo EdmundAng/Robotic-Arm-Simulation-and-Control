@@ -1,6 +1,5 @@
 Current Task:
-    - inverse kinematics, interactive, can select target position
-
+    
 Future Task:
     - feedback control
     - try recreate in MuJoCo
@@ -53,6 +52,9 @@ Task Done:
 
                 import numpy as np
 
+                LINK_LENGTHS = [2,1.5] # define link lengths
+                JOINT_LIMITS = [(0,180), (-75,75)] # relative to horizontal axis (0 deg)
+
                 def trans_matrix(theta_deg, length):
                     """Homogeneous transform for one revolute joint + link (planar)."""
                     t = np.radians(theta_deg)
@@ -76,9 +78,44 @@ Task Done:
                     new_joints = forward_kinematics([slider1.val, slider2.val])  # RELATIVE angles
 
                     if all(y >= 0 for _, y in new_joints):
-                        joints[:] = new_joints
+                        x, y = zip(*new_joints)
+                        line.set_data(x, y)
 
-                    x, y = zip(*joints)
-                    line.set_data(x, y)
                     return line,
             '''
+    - inverse kinematics, given target position, compute joint configuration
+        - interactive, can select target position
+            - read coordinates of user click within the plot, this will be my x2,y2
+        - how does the algorithm determine a solution?
+            - four unknowns (x1, y1, T1, T2), need four equations
+                - find T1, T2 first
+            - Find T2 -> T1 -> x1,y1
+                - find T2
+                    - find length of line connecting joint 2 to origin, using x2, y2 (Euclidean distance/PT)
+                        - making this line forms a triangle with the two links as the other two sides
+                    - get its opposite angle using law of cosine
+                    - supplement of that angle is T2 (180deg-A)
+                - find T1
+                    - find another angle using law of cosine in the same triangle, angle_C
+                    - what function gives the angle of a point from the origin? Think about which version handles all four quadrants safely?
+                        - angle_C + T1 is the angle of the target point from the x-axis
+                        - use just another PT, cos(angle_C+T1)=x2/a, acos
+                            - I use this, it works only because my boundary constraint is y>=0
+                        - use atan, only cover two quadrants (-90 to 90)
+                        - use atan2, covers all four quadrants (-180 to 180), this is necessary if my target y<0
+                - substitute back into existing equations to get x1, y1
+        - multiple solution case?
+            - inverted elbow case, different angle value, same end effector position
+            - keep both solutions, but choose the other if first one fails
+            - apply assumptions, approximations, constraints to narrow to one solution consistently?
+                - or maybe make a quadrant boundary line, to force symmetry
+                    - x2<=0: pick one solution, x2>0: pick the inverted solution
+                - or choose the shorter move to next point based on current point
+        - invalid / out-of-bounds / no solution case?
+            - apply boundary validation
+            - reaches outside work envelope (inner semi circle), this is wrong, it ignores my set joint limits for second link
+                - previously i only applied the limits to the sliders, here it was not
+                - can add validation inside inverse kinematics function, then return  y=-1 for any coordinate to trigger the second validation in animate function (render it as invalid)
+        - (optional) feed potential solution back in forward kinematics equations to double-validate, redundancy
+        - (optional) two-way feedback, the sliders will snap to current joints angles, after arm moves to target
+            - allow both forward and inverse to work simulataneously
