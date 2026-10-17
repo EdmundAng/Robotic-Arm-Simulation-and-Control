@@ -1,8 +1,7 @@
 Current Task:
-    
+    -> try recreate in MuJoCo
+
 Future Task:
-    - feedback control
-    - try recreate in MuJoCo
     - analyse dynamics
     - motion/trajectory control, smooth motion to target
     - try using homogeneous transformation matrices and Denavit-Hartenberg parameters? more useful when complexity increases (3D, more DOF, track orientation)
@@ -102,7 +101,7 @@ Task Done:
                         - use just another PT, cos(angle_C+T1)=x2/a, acos
                             - I use this, it works only because my boundary constraint is y>=0
                         - use atan, only cover two quadrants (-90 to 90)
-                        - use atan2, covers all four quadrants (-180 to 180), this is necessary if my target y<0
+                        -> (explore in future) use atan2, covers all four quadrants (-180 to 180), this is necessary if my target y<0
                 - substitute back into existing equations to get x1, y1
         - multiple solution case?
             - inverted elbow case, different angle value, same end effector position
@@ -116,6 +115,57 @@ Task Done:
             - reaches outside work envelope (inner semi circle), this is wrong, it ignores my set joint limits for second link
                 - previously i only applied the limits to the sliders, here it was not
                 - can add validation inside inverse kinematics function, then return  y=-1 for any coordinate to trigger the second validation in animate function (render it as invalid)
-        - (optional) feed potential solution back in forward kinematics equations to double-validate, redundancy
         - (optional) two-way feedback, the sliders will snap to current joints angles, after arm moves to target
             - allow both forward and inverse to work simulataneously
+    - refactoring
+        - modify inverse kinematics function to return angles only
+            - validate joint angles in inverse_kinematics function
+        - then use forward kinematics function to compute positions
+            - validate position in forward_kinematics
+        - incorrect outcome issue return 
+            - bottom right semi-circle cannot reach
+                - add elif condition for inverted configuration
+            - bottom left (and also bottom right) false positive (clicking y<0 still creates valid joint angle)
+                - add another validation check for negative y2 in inverse_kinematics function
+    -> feedback control
+        - should I use mouse cursor position as moving target, or keep the double-click method? same. lets keep it double-click first
+        - first try simulating a scripted gradual animation movement to target, instead of teleport
+            - track joint angles as persistent state / running angles for joints
+            - incremental steps for joint angle for each frame
+            - results: jittery look
+                - overshooting? the higher the step, the crazier the jitters
+                - it is never achieving its target
+                    - add a tolerance range, if within +/- 0.05 deg, consider target achieved
+                    - this tolerance value must >= step size?
+        - dynamic step size?
+            - use different step size for each joint?
+            - calculate exact step size required to reach from point A to B, evenly spaced?
+            - step size calculated based on error of joint angles (this might be doing the P in PID)
+                - reduce steps size as approaching target, use error value
+                - will this produce a more smooth motion, like ramping? Yes, if the gain value tuned appropriately
+                - higher gain value, faster, but creates more springiness/overshoot/oscillations
+        -> PID controller
+            - in current simulation, the arm can work well with just proportional control (K_P) + tolerance gap
+                - there are no disturbance to the process, e.g. no physics like mechanical friction, signal delay/lag, noise
+                - also no encoder/position measurement like real life sensors, so the current angle is just fed back into controller instantly
+                - also currently the current angle is used as the feedback with the controlled output being the angle also (angle step size), this makes the tuning easier and direct, more/most effective/responsive?
+                - how about using let's say "end-effector position" as the measurement and feedback
+                - or is it because, in real life, I am not directly controlling the joint angle, but controlling things like input current/voltage, e.g. use encoder as feedback, and PWM as output
+            - add I
+                - Adds up past error over time to eliminate the permanent offset entirely, bringing the system right to the setpoint, achieve zero steady-state error
+                - can eliminate the need for a tolerance gap? to fully achieve setpoint?
+                - no need I?, as this is a fast process, not enough time to accumulate error?
+                - suitable use for case where there is constant disturbance or load (e.g. gravity)
+                - downside: has lag, can cause overshoot, causes "integral windup" (output saturated, but error keeps accumulating)
+                -> analyse integral windup
+            - add D
+                - Reacts to how fast the error is changing, acting as a brake to reduce overshoot and oscillations
+                - suitable use for case where system is underdamped or has momentum/inertia (drones, balancing robots, fast motors)
+                - also useful when there is sensor/actuator delay, dyanmic lag (e.g. flexible linkage)
+            - simulate a gravity-like drift disturbance to make I useful
+                - "I" will reduce the offset from target over time
+            - simulate inertia to make D useful
+            -> how to calculate suitable tuning parameter?, or have better intuition?
+        - use another plot to analyse overshoot, settling time, steady-state error
+            - angle over time
+            - log overshoot, settling time, steady-state error data?
