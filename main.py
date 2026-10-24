@@ -15,9 +15,8 @@ MANUAL_MODE = False
 target_angles = [90, 0] # intial target angles (home position)
 cur_angles = [90, 0] # running angles (initialise same as target)
 newPositionClicked = True
-K_P = 48
-K_I = 64 
-K_D = 11
+K_P, K_I, K_D = 48, 64, 11
+# K_P, K_I, K_D = 5, 0, 0
 I_LIMIT = 50 # anti-windup clamp on the integral
 prev_time = time.time()
 integral_t1, integral_t2 = 0, 0
@@ -71,7 +70,11 @@ def move_figure_to_monitor(fig, monitor_index=1, x_offset=0, y_offset=0):
             print(f"Positioning not supported natively on backend: {backend}")
 
 def forward_kinematics(angles_deg):
-    if not angles_deg:
+    lo_1, hi_1 = JOINT_LIMITS[0][0], JOINT_LIMITS[0][1]
+    lo_2, hi_2 = JOINT_LIMITS[1][0], JOINT_LIMITS[1][1]
+    is_valid_angles = (lo_1 <= angles_deg[0] <= hi_1) and (lo_2 <= angles_deg[1] <= hi_2)
+
+    if not angles_deg or not is_valid_angles:
         return None
     
     L1, L2 = LINK_LENGTHS
@@ -138,11 +141,13 @@ def on_click(event):
             vel_t1 = vel_t2 = 0.0
             newPositionClicked = True
 
+# the main loop
 def animate(i):
     global target_angles, cur_angles, last_valid_target, newPositionClicked, prev_time, integral_t1, integral_t2, prev_diff_t1, prev_diff_t2, vel_t1, vel_t2
     if MANUAL_MODE: target_angles = [slider1.val, slider2.val] # manual control with sliders
         
     # dt measured every frame, regardless of whether there's a target
+    # frame-rate independent
     current_time = time.time()
     dt = min(current_time - prev_time, 0.1)  # clamp so a stall can't cause a huge step
     prev_time = current_time
@@ -153,8 +158,8 @@ def animate(i):
         target_t1, target_t2 = target_angles
         diff_t1, diff_t2 = target_t1 - cur_t1, target_t2 - cur_t2 # error
 
-        integral_t1 = integral_t1 + diff_t1 * dt
-        integral_t2 = integral_t2 + diff_t2 * dt
+        integral_t1 += diff_t1 * dt
+        integral_t2 += + diff_t2 * dt
         # integral_t1 = max(-I_LIMIT, min(I_LIMIT, integral_t1 + diff_t1 * dt)) # prevent integral windup
         # integral_t2 = max(-I_LIMIT, min(I_LIMIT, integral_t2 + diff_t2 * dt))
 

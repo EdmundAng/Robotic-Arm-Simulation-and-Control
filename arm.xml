@@ -1,0 +1,87 @@
+<!-- <mujoco> is the root of every MJCF file; "model" is just a label -->
+<mujoco model="two_link_arm">
+    <!-- timestep: 0.002 s = 500 Hz physics (smaller = more accurate, slower) -->
+    <!-- gravity: vector in world frame; -Z means "down" -->
+    <option timestep="0.002" gravity="0 0 -9.81"/>
+
+    <worldbody>
+        <!-- Everything physical goes inside worldbody -->
+        <geom name="ground" type="plane" size="0.6 0.6 0.1" rgba="0.8 0.8 0.8 1"/>
+
+        <!-- A body with NO joint is rigidly fixed to its parent (here: the world). -->
+        <!-- pos="0 0 0.1" lifts the body origin 0.1 m above the ground. -->
+        <body name="base" pos="0 0 0.025">
+            <!-- Cylinder size = "radius half-height" -> radius 0.08, total height 0.2. -->
+            <!-- Centered on the body origin, so it spans z = 0 to 0.2 in world coords. -->
+            <geom name="base_geom" type="cylinder" size="0.03 0.025" rgba="0.3 0.3 0.3 1"/>
+
+            <!-- Link 1 -->
+            <body name="link1" pos="0 0 0.035">
+                <!-- hinge = 1 rotational DOF. The joint sits at the body origin (the shoulder). -->
+                <!-- axis="0 1 0" -> rotates about Y, so the arm swings in the X-Z plane. -->
+                <!-- range is in DEGREES (MuJoCo default); limit is enforced automatically. -->
+                <joint name="joint1" type="hinge" axis="0 0 1" range="0 180" 
+                    damping="0.144" armature="0.008" frictionloss="0.05"/>
+
+                <!-- The center rectangular section of the slot -->
+                <!-- size = half length, half width, half thickness -->
+                <geom type="box" pos="0.1 0 0" size="0.1 0.015 0.01" rgba="1 0 0 1"/>
+                
+                <!-- Left Rounded End (Radius matches the box Y-half-size) -->
+                <geom type="cylinder" pos="0 0 0" size="0.015 0.01" rgba="1 0 0 1"/>
+                
+                <!-- Right Rounded End -->
+                <geom type="cylinder" pos="0.2 0 0" size="0.02 0.02" rgba="0.3 0.3 0.3 1"/>
+
+                <!-- Link 2 -->
+                <body name="link2" pos="0.2 0 0.03">
+                    <joint name="joint2" type="hinge" axis="0 0 1" range="-120 120" 
+                        damping="0.144" armature="0.008" frictionloss="0.05"/>
+                    <geom type="box" pos="0.075 0 0" size="0.075 0.015 0.01" rgba="1 0 0 1"/>
+                    <geom type="cylinder" pos="0 0 0" size="0.015 0.01" rgba="1 0 0 1"/>
+                    <geom name="bob" type="cylinder" pos="0.15 0 0" size="0.015 0.015" rgba="0 0 1 1"
+                        density="1000"/>
+                    <site name= "end-effector" pos="0.15 0 0" size="0.018" rgba="1 1 1 0.5"/>
+                </body>
+            </body>
+        </body>
+
+        <body name="obstacle1" pos=" 0 0.4 0.5">
+            <joint type="free"/>
+            <geom name="cube" type="box" size="0.02 0.02 0.02" rgba="0 1 0 1" 
+                density="50"/>
+        </body>
+
+    </worldbody>
+    
+    <actuator>
+        <!-- No Feedback Control (must add in main program)  -->
+        <!-- <motor name="motor1" joint="joint1" gear="1.08" ctrlrange="-1 1" forcerange="-1 1"/> -->
+        <!-- <motor name="motor2" joint="joint2" gear="1.08" ctrlrange="-1 1" forcerange="-1 1"/> -->
+        
+        <!-- Internal PD Feedback Control -->
+        <position name="motor1" joint="joint1" kp="20" kv="1.0"
+            ctrlrange="0 3.14159" forcerange="-1.08 1.08"/>
+        <position name="motor2" joint="joint2" kp="20" kv="1.0"
+            ctrlrange="-2.0944 2.0944" forcerange="-1.08 1.08"/>
+    </actuator>
+
+    <contact>
+        <pair geom1="ground" geom2="cube" condim="4"
+              friction="0.5 0.5 0.005 0.0001 0.0001"/>
+    </contact>
+
+    <sensor>
+        <framepos name="link1_pos" objtype="xbody" objname="link1"/>
+        <framepos name="link2_pos" objtype="xbody" objname="link2"/>
+        <framepos name="ee_pos" objtype="site" objname="end-effector"/>
+        <jointpos name="q1" joint="joint1"/>
+        <jointpos name="q2" joint="joint2"/>
+        <jointvel name="dq1" joint="joint1"/>
+        <jointvel name="dq2" joint="joint2"/>
+        <actuatorfrc name="tau1" actuator="motor1"/>
+        <actuatorfrc name="tau2" actuator="motor2"/>
+        <accelerometer name="tip_imu" site="end-effector"/>
+    </sensor>
+
+</mujoco>

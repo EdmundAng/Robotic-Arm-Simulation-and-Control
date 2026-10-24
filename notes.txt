@@ -1,9 +1,48 @@
 Current Task:
-    -> try recreate in MuJoCo
+    -> recreate in MuJoCo & analyse dynamics
+        - Physics/Dynamics: Mass, Inertia, Gravity, Force/Torque, Velocity, Acceleration, Friction, Contact
+            - add mass of linkage or end effector/payload to see inertia effect
+                - make end effector cylinder as steel density (7800kg/m^3), now the inertia is higher and there is an overshoot
+            - try add obstacle in work area
+                - hitting it, making it fall
+                - momentum has effect
+            - study how does contact and friction work in MuJoCo
+        - add joints and motors
+            - joint limits = joint range
+            - joint dynamics: joint damping, armature, frictionloss (simulate friction and inertia)
+        - add position control
+            - use built-in position control (uses simulator's measurement of joint angle, like a perfect encoder)
+            - or use own feedback loop, and also use MuJoCo sensors (can add noise etc.) as measurement data?
+            - add drift?, would it need Integral control?
+        - add keyboard control over joint/motor angles (controllable step size)
+        - track joint cartesian coordinates
+            - data.xpos: returns absolute coordinates of body's origin relative to global origin (0,0,0), this uses the simulation's computed state
+            - print joint coordinates to terminal, stop printing when settled
+            - setup an imaginary boundary / work boundary, like i did before with y>=0?
+                - unlike my own program, where I can validate coordinates before comitting the movement
+                - here the joint coordinates are read from simulator, after the movement
+                - hence, need to do my own forward kinematics calculation to forsee the future coordinate before moving
+            - control arm by coordinate, like inverse kinematics in mathematical simulation program
+                - or connect the two programs, selecting the target coordinates in one, then the target angles sent to mujoco program?
+                - or copy over inverse kinematics function
+                - make it follow the cube obstacle as I drag it around (track its coordinates)
+        - try add MuJoCo sensors (track angle, position, accelerometer)
+    -> motion/trajectory control, smooth motion to target
+        - plot/analyse velocity, acceleration profiles
+        - set velocity and acceleration limits
+        - continuity?
 
 Future Task:
-    - analyse dynamics
-    - motion/trajectory control, smooth motion to target
+    - motion/trajectory planning, obstacle avoidance
+        - avoid collision with linkage bodies
+        - use multiple solutions
+    - make it do a task?
+        - previously it follows the cube's 2D coordinates
+            -try to balance it on the end effector, then move arm
+                - found a mysterious phenomenon where it tries to straighten arm when I bend joint 2 
+        - add a gripper? pick and place task?
+        - or catch falling objects
+        - try reinforcement learning here?
     - try using homogeneous transformation matrices and Denavit-Hartenberg parameters? more useful when complexity increases (3D, more DOF, track orientation)
 
 Task Done:
