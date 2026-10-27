@@ -1,41 +1,7 @@
 Current Task:
-    -> recreate in MuJoCo & analyse dynamics
-        - Physics/Dynamics: Mass, Inertia, Gravity, Force/Torque, Velocity, Acceleration, Friction, Contact
-            - add mass of linkage or end effector/payload to see inertia effect
-                - make end effector cylinder as steel density (7800kg/m^3), now the inertia is higher and there is an overshoot
-            - try add obstacle in work area
-                - hitting it, making it fall
-                - momentum has effect
-            - study how does contact and friction work in MuJoCo
-        - add joints and motors
-            - joint limits = joint range
-            - joint dynamics: joint damping, armature, frictionloss (simulate friction and inertia)
-        - add position control
-            - use built-in position control (uses simulator's measurement of joint angle, like a perfect encoder)
-            - or use own feedback loop, and also use MuJoCo sensors (can add noise etc.) as measurement data?
-            - add drift?, would it need Integral control?
-        - add keyboard control over joint/motor angles (controllable step size)
-        - track joint cartesian coordinates
-            - data.xpos: returns absolute coordinates of body's origin relative to global origin (0,0,0), this uses the simulation's computed state
-            - print joint coordinates to terminal, stop printing when settled
-            - setup an imaginary boundary / work boundary, like i did before with y>=0?
-                - unlike my own program, where I can validate coordinates before comitting the movement
-                - here the joint coordinates are read from simulator, after the movement
-                - hence, need to do my own forward kinematics calculation to forsee the future coordinate before moving
-            - control arm by coordinate, like inverse kinematics in mathematical simulation program
-                - or connect the two programs, selecting the target coordinates in one, then the target angles sent to mujoco program?
-                - or copy over inverse kinematics function
-                - make it follow the cube obstacle as I drag it around (track its coordinates)
-        - try add MuJoCo sensors (track angle, position, accelerometer)
-    -> motion/trajectory control, smooth motion to target
-        - plot/analyse velocity, acceleration profiles
-        - set velocity and acceleration limits
-        - continuity?
+
 
 Future Task:
-    - motion/trajectory planning, obstacle avoidance
-        - avoid collision with linkage bodies
-        - use multiple solutions
     - make it do a task?
         - previously it follows the cube's 2D coordinates
             -try to balance it on the end effector, then move arm
@@ -44,6 +10,9 @@ Future Task:
         - or catch falling objects
         - try reinforcement learning here?
     - try using homogeneous transformation matrices and Denavit-Hartenberg parameters? more useful when complexity increases (3D, more DOF, track orientation)
+    - motion/trajectory planning, obstacle avoidance
+        - avoid collision with linkage bodies
+        - use multiple solutions
 
 Task Done:
     - create venv
@@ -208,3 +177,54 @@ Task Done:
         - use another plot to analyse overshoot, settling time, steady-state error
             - angle over time
             - log overshoot, settling time, steady-state error data?
+    - recreate in MuJoCo & analyse dynamics
+        - Physics/Dynamics: Mass, Inertia, Gravity, Force/Torque, Velocity, Acceleration, Friction, Contact
+            - add mass of linkage or end effector/payload to see inertia effect
+                - make end effector cylinder as steel density (7800kg/m^3), now the inertia is higher and there is an overshoot
+            - try add obstacle in work area
+                - hitting it, making it fall
+                - momentum has effect
+            - study how does contact and friction work in MuJoCo
+        - add joints and motors
+            - joint limits = joint range
+            - joint dynamics: joint damping, armature, frictionloss (simulate friction and inertia)
+        - add position control
+            - use built-in position control (uses simulator's measurement of joint angle, like a perfect encoder)
+            - or use own feedback loop, and also use MuJoCo sensors (can add noise etc.) as measurement data?
+            - add drift?, would it need Integral control?
+        - add keyboard control over joint/motor angles (controllable step size)
+        - track joint cartesian coordinates
+            - data.xpos: returns absolute coordinates of body's origin relative to global origin (0,0,0), this uses the simulation's computed state
+            - print joint coordinates to terminal, stop printing when settled
+            - setup an imaginary boundary / work boundary, like i did before with y>=0?
+                - unlike my own program, where I can validate coordinates before comitting the movement
+                - here the joint coordinates are read from simulator, after the movement
+                - hence, need to do my own forward kinematics calculation to forsee the future coordinate before moving
+            - control arm by coordinate, like inverse kinematics in mathematical simulation program
+                - or connect the two programs, selecting the target coordinates in one, then the target angles sent to mujoco program?
+                - or copy over inverse kinematics function
+                - make it follow the cube obstacle as I drag it around (track its coordinates)
+        - try add MuJoCo sensors (track angle, position, accelerometer)
+    - motion/trajectory control, smooth motion to target
+        - plot/analyse velocity, acceleration profiles
+            - do for tip/end-effector only
+            - do an experiment, change weight of bobs, analyse difference in velocity/acceleration plots
+        - to limit velocity and acceleration, need to step angle to target instead of jump to target directly
+            - so that can limit the step values per frame
+        - limit speed/velocity
+            - tuning MAX_JOINT_SPEED so the tip stays under your limit when the arm is fully extended (the worst case) gives you most of the protection with no extra math. With link lengths 0.2 and 0.15 m, the tip speed at full extension is about 0.35 m × (joint speed in rad/s), so 90°/s (1.57 rad/s) gives roughly 0.55 m/s at worst. Pick MAX_JOINT_SPEED from that
+        - limit acceleration
+            - ramps up velocity over a duration
+        - currently using PD actuator (kp=20, kv=1.0) acts as a low-pass filter between the command and the real arm. Even if the commanded acceleration has sharp corners, the actual tip_acc will be rounded off. Your torque cap (forcerange of ±1.08) also bounds the real acceleration physically. This already softens the movement.
+        - continuity
+            - C⁰ Continuity: The path is unbroken (the robot doesn't instantly teleport), but it contains sharp corners.
+            - C¹ Continuity (Velocity Continuity): The speed is smooth, velocity is continuous but acceleration jumps. Those jumps are the sudden torque steps that cause the shaking, because a step in acceleration is an impulse in jerk. This causes the robot to violently shake or jerk.
+                - trapezoidal velocity profile
+                - achieved with velocity and acceleration limiting
+            - C² Continuity (Acceleration Continuity): The acceleration changes smoothly. This is the minimum requirement for industrial applications, ensuring the arm moves fluidly without destructive vibrations or tearing its own gears apart.
+                - S-curve velocity profile
+                - jerk-limiting, to further round corners, such as the start and stop phases
+        - can do a rough test by putting cube on tip, then making big moves, see if cube falls
+            - with acc and jerk limit, tipping is minimized
+            - there is other factors causing cube to shift and tip over, need to investigate...
+        - perhaps can use a better test, such as simulating a glass of water wobbling, maybe add a pendulum attached at tip?
