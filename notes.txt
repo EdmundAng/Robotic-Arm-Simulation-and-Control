@@ -1,18 +1,41 @@
 Current Task:
-
+    - demonstrate singularity
+        - My current pipeline is: pick a joint target, then have each joint ramp there independently under velocity, acceleration and jerk limits. The joints never need to know where the tip is going or how fast, so J⁻¹ is never involved. Singularities only hurt when you invert the Jacobian, which happens when you say “move the tip in a straight line at 0.1 m/s” and the controller must work out the joint speeds.
+            - my limits provide partial protection, it will never command infinite speeds
+            - however, my tip speed here cannot be guaranteed
+            - Where the singularities are with your limits?
+                - Stretched arm (T2 = 0°): reach is 0.35 m and det(J) = L1·L2·sin(T2) = 0. Presets 1 (90, 0) and 3 (30, 0) are both exactly here.
+                - Folded arm (T2 = ±180°): your T2 limit is ±120°, so you can’t reach it. The closest you get is T2 = ±120°, reach ≈ 0.18 m, which is near-singular only in the sense that the workspace ends there.
+                - Origin: unreachable (min reach is 0.05 m), so it only matters for the IK math.
+        - so let's try cartesian velocity control
+        - drive the tip radially outward at constant speed
+            - controller have to compute the required joint speeds (IK via inverse jacobians)
+            - we can observe the singularity as the arm elbow fully extends (when arm fully stretches)
+            - the speed limits keep the sim stable, remove them to see the erratic jerking
+                - Speed cap: "dq = np.clip(dq, -MAX_JOINT_SPEED, MAX_JOINT_SPEED)"
+                - it jerks, finds a valid position and does the outward radial path, it will jerk and snap into inverted elbow config and do the outward radial path too
+                - this goes on indefinitely
+        - try methods of avoiding singularity
+            - use damped least squares (a modified inverse that limits joint speeds and accepts a small tracking error near the singularity instead of exploding)
 
 Future Task:
+    - motion/trajectory planning
+        - obstacle avoidance, avoid collision with linkage bodies
+        - use multiple solutions, alternate joint angles for same target position
+        - path following
+        - avoid singularity conditions
+        - moving the curve path instead of a straight line path
+            - such that each joint roughly finishes at the time, instead of one being faster than the other
+    - add 3D and more DOF (e.g. 6-DOF)
+        - FK, IK, use homogeneous transformation matrices (4x4), DH parameters
+        - track orientation (consider euler angles, quartenions, gimbal locks)
     - make it do a task?
         - previously it follows the cube's 2D coordinates
-            -try to balance it on the end effector, then move arm
+            - try to balance it on the end effector, then move arm
                 - found a mysterious phenomenon where it tries to straighten arm when I bend joint 2 
         - add a gripper? pick and place task?
         - or catch falling objects
         - try reinforcement learning here?
-    - try using homogeneous transformation matrices and Denavit-Hartenberg parameters? more useful when complexity increases (3D, more DOF, track orientation)
-    - motion/trajectory planning, obstacle avoidance
-        - avoid collision with linkage bodies
-        - use multiple solutions
 
 Task Done:
     - create venv
@@ -200,6 +223,7 @@ Task Done:
                 - unlike my own program, where I can validate coordinates before comitting the movement
                 - here the joint coordinates are read from simulator, after the movement
                 - hence, need to do my own forward kinematics calculation to forsee the future coordinate before moving
+                    - alternatively, can read from MuJoCo?, as it does its own FK?
             - control arm by coordinate, like inverse kinematics in mathematical simulation program
                 - or connect the two programs, selecting the target coordinates in one, then the target angles sent to mujoco program?
                 - or copy over inverse kinematics function

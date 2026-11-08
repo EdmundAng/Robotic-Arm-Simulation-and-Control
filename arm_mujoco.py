@@ -34,6 +34,11 @@ cmd = {"m1": 0.0, "m2": 0.0}   # angle sent to the actuators
 vel = {"m1": 0.0, "m2": 0.0}   # commanded joint velocity (deg/s)
 acc = {"m1": 0.0, "m2": 0.0}    # commanded joint acceleration (deg/s²)
 
+KEY_4 = 52
+cart = False
+V_TIP = 0.10   # m/s, constant tip speed along the radial direction
+dls_lambda = 0.01 # DLS damping dial, tune it
+
 # Pacing: N physics steps per rendered frame so sim time ~ wall time
 STEPS_PER_FRAME = 8                      
 FRAME_DT = STEPS_PER_FRAME * model.opt.timestep # Target Timing Per Frame = 8 * 2 ms = 16 ms (62.5FPS ~ 60 FPS)
@@ -148,7 +153,7 @@ def print_sensor_data():
     print(f"Tip Linear Velocity: {data.sensor("tip_vel").data}, Magnitude |v|={np.linalg.norm(data.sensor("tip_vel").data):.4f} m/s")
 
 def key_callback(keycode):
-    global step_size, followCube, mode
+    global step_size, followCube, mode, cart
     if keycode == KEY_BACKSPACE: # soft reset
         step_size = 5.0
         followCube = False
@@ -188,6 +193,35 @@ def key_callback(keycode):
             vel[k] = 0.0
             acc[k] = 0.0
         print("Mode:", MODE_NAMES[mode])
+    elif keycode == KEY_4:
+        cart = not cart
+        if cart:
+            target["m1"], target["m2"] = 45.0, -90.0       # start at reach 0.25 m
+            cmd["m1"], cmd["m2"] = 45.0, -90.0
+            vel["m1"] = vel["m2"] = acc["m1"] = acc["m2"] = 0.0
+        print("Cartesian mode:", cart)
+
+def step_cartesian():
+    '''drive the tip radially outward at constant speed'''
+    L1, L2 = LINK_LENGTHS
+    q1, q2 = np.deg2rad(cmd["m1"]), np.deg2rad(cmd["m2"])
+    s1, c1 = np.sin(q1), np.cos(q1)
+    s12, c12 = np.sin(q1 + q2), np.cos(q1 + q2)
+    p = np.array([L1*c1 + L2*c12, L1*s1 + L2*s12])          # tip xy position (from 3x3 matrix)
+    J = np.array([[-L1*s1 - L2*s12, -L2*s12],               # Jacobian (see derivation)
+                  [ L1*c1 + L2*c12,  L2*c12]])
+    v = V_TIP * p / np.linalg.norm(p)                       # radial outward (scales unit vector by V_Tip)
+    try:
+        # dq = np.rad2deg(np.linalg.solve(J, v))              # deg/s, what IK *demands*
+        dq = np.rad2deg(J.T @ np.linalg.solve(J @ J.T + dls_lambda**2 * np.eye(J.shape[0]), v)) # DLS-method
+    except np.linalg.LinAlgError:
+        dq = np.array([0.0, 1e6])
+    print(f"r={np.linalg.norm(p):.3f}  q2={np.rad2deg(q2):+6.1f}  "
+          f"det={np.linalg.det(J):+.5f}  demanded dq=({dq[0]:+9.1f}, {dq[1]:+9.1f}) deg/s")
+    # dq = np.clip(dq, -MAX_JOINT_SPEED, MAX_JOINT_SPEED)     # real robot limit (uncap to see erratic jerking), doesn't work with DLS
+    cmd["m1"] = np.clip(cmd["m1"] + dq[0]*FRAME_DT, *JOINT_LIMITS[0])
+    cmd["m2"] = np.clip(cmd["m2"] + dq[1]*FRAME_DT, *JOINT_LIMITS[1])
+    target["m1"], target["m2"] = cmd["m1"], cmd["m2"]       # this re-aims wherever the tip ends up each frame
 
 def step_rate_limited():
     """velocity is capped, but jumps from 0 to the cap instantly."""
@@ -260,9 +294,9 @@ def forward_kinematics(angles_deg):
 
     # validate joints are within boundary, y>=0
     if y1 >= 0 and y2 >= 0:
-        # data.actuator("motor1").ctrl = np.deg2rad(target["m1"])
+        # data.actuator("motor1").ctrl = np.deg2rad(target["m1"]) # command straight to target
         # data.actuator("motor2").ctrl = np.deg2rad(target["m2"])
-        data.actuator("motor1").ctrl = np.deg2rad(cmd["m1"])
+        data.actuator("motor1").ctrl = np.deg2rad(cmd["m1"]) # command step angles
         data.actuator("motor2").ctrl = np.deg2rad(cmd["m2"])
 
 def inverse_kinematics(target_pos):
@@ -327,7 +361,9 @@ with mujoco.viewer.launch_passive(model, data, key_callback=key_callback) as vie
                 result = inverse_kinematics(obstacle_pos_xy)
                 if result is not None: target["m1"], target["m2"] = result
 
-            step_cmd_toward_target()
+            if cart: step_cartesian()
+            else:    step_cmd_toward_target()
+            # step_cmd_toward_target()
             forward_kinematics([target["m1"], target["m2"]])
 
             for _ in range(STEPS_PER_FRAME): 

@@ -1,0 +1,236 @@
+Cartesian mode: True
+r=0.250  q2= -90.0  det=-0.03000  demanded dq=(    -17.0,     +47.4) deg/s
+r=0.252  q2= -89.2  det=-0.03000  demanded dq=(    -17.2,     +47.7) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.02797294]  Joint2: [-0.05395376]
+Joint Velocity: Joint1: [1.65966083]  Joint2: [-3.1193615]
+Actuator Force: Joint1: [1.08]  Joint2: [-1.08]
+Tip IMU: [-1.3763531   4.32915929  9.81      ]
+Tip Linear Acceleration: [-1.26342613  4.36345304  9.81      ]
+Tip Linear Velocity: [-0.0149719  0.1129211  0.       ], Magnitude |v|=0.1139 m/s
+r=0.253  q2= -88.5  det=-0.02999  demanded dq=(    -17.4,     +48.0) deg/s
+r=0.255  q2= -87.7  det=-0.02998  demanded dq=(    -17.6,     +48.3) deg/s
+r=0.256  q2= -86.9  det=-0.02996  demanded dq=(    -17.8,     +48.6) deg/s
+r=0.258  q2= -86.2  det=-0.02993  demanded dq=(    -18.0,     +49.0) deg/s
+r=0.259  q2= -85.4  det=-0.02990  demanded dq=(    -18.2,     +49.3) deg/s
+r=0.261  q2= -84.6  det=-0.02987  demanded dq=(    -18.4,     +49.7) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.34824352]  Joint2: [-0.57669828]
+Joint Velocity: Joint1: [4.52833585]  Joint2: [-6.66099011]
+Actuator Force: Joint1: [1.08]  Joint2: [-1.08]
+Tip IMU: [-6.23130839  2.14602622  9.81      ]
+Tip Linear Acceleration: [-5.58338714  3.50148837  9.81      ]
+Tip Linear Velocity: [-0.38150467  0.5397168   0.        ], Magnitude |v|=0.6609 m/s
+r=0.263  q2= -83.8  det=-0.02982  demanded dq=(    -18.6,     +50.0) deg/s
+r=0.264  q2= -83.0  det=-0.02978  demanded dq=(    -18.9,     +50.4) deg/s
+r=0.266  q2= -82.2  det=-0.02972  demanded dq=(    -19.1,     +50.8) deg/s
+r=0.267  q2= -81.4  det=-0.02966  demanded dq=(    -19.3,     +51.2) deg/s
+r=0.269  q2= -80.6  det=-0.02959  demanded dq=(    -19.5,     +51.6) deg/s
+r=0.271  q2= -79.7  det=-0.02952  demanded dq=(    -19.8,     +52.0) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.68144345]  Joint2: [-1.17718397]
+Joint Velocity: Joint1: [1.01066996]  Joint2: [-4.05270372]
+Actuator Force: Joint1: [-0.36626813]  Joint2: [0.05546029]
+Tip IMU: [5.5379172  3.58952485 9.81      ]
+Tip Linear Acceleration: [6.57872095 0.52311205 9.81      ]
+Tip Linear Velocity: [-0.34438382 -0.2443833   0.        ], Magnitude |v|=0.4223 m/s
+r=0.272  q2= -78.9  det=-0.02944  demanded dq=(    -20.0,     +52.4) deg/s
+r=0.274  q2= -78.1  det=-0.02935  demanded dq=(    -20.2,     +52.9) deg/s
+r=0.275  q2= -77.2  det=-0.02926  demanded dq=(    -20.5,     +53.4) deg/s
+r=0.277  q2= -76.4  det=-0.02915  demanded dq=(    -20.8,     +53.9) deg/s
+r=0.278  q2= -75.5  det=-0.02904  demanded dq=(    -21.0,     +54.4) deg/s
+r=0.280  q2= -74.6  det=-0.02893  demanded dq=(    -21.3,     +54.9) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.6927041]  Joint2: [-1.29822602]
+Joint Velocity: Joint1: [-0.20151052]  Joint2: [0.12774053]
+Actuator Force: Joint1: [-0.0706821]  Joint2: [0.09310881]
+Tip IMU: [-0.03091853  0.40900334  9.81      ]
+Tip Linear Acceleration: [0.20737976 0.3538832  9.81      ]
+Tip Linear Velocity: [ 0.01943936 -0.04011146  0.        ], Magnitude |v|=0.0446 m/s
+r=0.282  q2= -73.8  det=-0.02880  demanded dq=(    -21.6,     +55.4) deg/s
+r=0.283  q2= -72.9  det=-0.02867  demanded dq=(    -21.8,     +56.0) deg/s
+r=0.285  q2= -72.0  det=-0.02853  demanded dq=(    -22.1,     +56.5) deg/s
+r=0.286  q2= -71.1  det=-0.02838  demanded dq=(    -22.4,     +57.1) deg/s
+r=0.288  q2= -70.1  det=-0.02822  demanded dq=(    -22.8,     +57.8) deg/s
+r=0.289  q2= -69.2  det=-0.02805  demanded dq=(    -23.1,     +58.4) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.66285009]  Joint2: [-1.23877624]
+Joint Velocity: Joint1: [-0.36180444]  Joint2: [0.85352445]
+Actuator Force: Joint1: [-0.06070099]  Joint2: [0.08400947]
+Tip IMU: [-0.64276994 -0.85851371  9.81      ]
+Tip Linear Acceleration: [-1.00664029 -0.3699653   9.81      ]
+Tip Linear Velocity: [0.0846979  0.00482211 0.        ], Magnitude |v|=0.0848 m/s
+r=0.291  q2= -68.3  det=-0.02787  demanded dq=(    -23.4,     +59.1) deg/s
+r=0.293  q2= -67.3  det=-0.02769  demanded dq=(    -23.8,     +59.8) deg/s
+r=0.294  q2= -66.4  det=-0.02749  demanded dq=(    -24.1,     +60.5) deg/s
+r=0.296  q2= -65.4  det=-0.02728  demanded dq=(    -24.5,     +61.3) deg/s
+r=0.297  q2= -64.4  det=-0.02706  demanded dq=(    -24.9,     +62.1) deg/s
+r=0.299  q2= -63.4  det=-0.02684  demanded dq=(    -25.3,     +62.9) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.6247263]  Joint2: [-1.14487309]
+Joint Velocity: Joint1: [-0.41291881]  Joint2: [1.01924315]
+Actuator Force: Joint1: [-0.0618073]  Joint2: [0.08221306]
+Tip IMU: [-0.77010496 -1.092039    9.81      ]
+Tip Linear Acceleration: [-1.21100727 -0.56486477  9.81      ]
+Tip Linear Velocity: [0.09350337 0.01193474 0.        ], Magnitude |v|=0.0943 m/s
+r=0.300  q2= -62.4  det=-0.02660  demanded dq=(    -25.7,     +63.8) deg/s
+r=0.302  q2= -61.4  det=-0.02634  demanded dq=(    -26.1,     +64.7) deg/s
+r=0.304  q2= -60.4  det=-0.02608  demanded dq=(    -26.6,     +65.7) deg/s
+r=0.305  q2= -59.3  det=-0.02580  demanded dq=(    -27.0,     +66.7) deg/s
+r=0.307  q2= -58.3  det=-0.02552  demanded dq=(    -27.5,     +67.7) deg/s
+r=0.308  q2= -57.2  det=-0.02521  demanded dq=(    -28.1,     +68.8) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.58213501]  Joint2: [-1.03919261]
+Joint Velocity: Joint1: [-0.45824658]  Joint2: [1.12208897]
+Actuator Force: Joint1: [-0.06371372]  Joint2: [0.0850226]
+Tip IMU: [-0.83071715 -1.13084644  9.81      ]
+Tip Linear Acceleration: [-1.24450153 -0.64816709  9.81      ]
+Tip Linear Velocity: [0.09433358 0.01280151 0.        ], Magnitude |v|=0.0952 m/s
+r=0.310  q2= -56.1  det=-0.02490  demanded dq=(    -28.6,     +70.0) deg/s
+r=0.311  q2= -55.0  det=-0.02456  demanded dq=(    -29.2,     +71.3) deg/s
+r=0.313  q2= -53.8  det=-0.02422  demanded dq=(    -29.8,     +72.6) deg/s
+r=0.314  q2= -52.7  det=-0.02385  demanded dq=(    -30.4,     +74.0) deg/s
+r=0.316  q2= -51.5  det=-0.02347  demanded dq=(    -31.1,     +75.5) deg/s
+r=0.318  q2= -50.3  det=-0.02307  demanded dq=(    -31.9,     +77.2) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.53458864]  Joint2: [-0.92256024]
+Joint Velocity: Joint1: [-0.51532548]  Joint2: [1.24601129]
+Actuator Force: Joint1: [-0.06652816]  Joint2: [0.08970726]
+Tip IMU: [-0.88521031 -1.15578172  9.81      ]
+Tip Linear Acceleration: [-1.25666558 -0.73499681  9.81      ]
+Tip Linear Velocity: [0.09397437 0.01277173 0.        ], Magnitude |v|=0.0948 m/s
+r=0.319  q2= -49.0  det=-0.02265  demanded dq=(    -32.6,     +78.9) deg/s
+r=0.321  q2= -47.8  det=-0.02221  demanded dq=(    -33.5,     +80.7) deg/s
+r=0.322  q2= -46.5  det=-0.02175  demanded dq=(    -34.4,     +82.7) deg/s
+r=0.324  q2= -45.2  det=-0.02127  demanded dq=(    -35.3,     +84.9) deg/s
+r=0.325  q2= -43.8  det=-0.02076  demanded dq=(    -36.4,     +87.2) deg/s
+r=0.327  q2= -42.4  det=-0.02023  demanded dq=(    -37.5,     +89.8) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.48033601]  Joint2: [-0.79108669]
+Joint Velocity: Joint1: [-0.59668881]  Joint2: [1.42591525]
+Actuator Force: Joint1: [-0.07116405]  Joint2: [0.09697215]
+Tip IMU: [-0.94558959 -1.20562638  9.81      ]
+Tip Linear Acceleration: [-1.26894845 -0.85874588  9.81      ]
+Tip Linear Velocity: [0.09317657 0.01259304 0.        ], Magnitude |v|=0.0940 m/s
+r=0.328  q2= -41.0  det=-0.01967  demanded dq=(    -38.8,     +92.6) deg/s
+r=0.330  q2= -39.5  det=-0.01907  demanded dq=(    -40.1,     +95.7) deg/s
+r=0.331  q2= -37.9  det=-0.01845  demanded dq=(    -41.6,     +99.2) deg/s
+r=0.333  q2= -36.4  det=-0.01779  demanded dq=(    -43.3,    +103.0) deg/s
+r=0.334  q2= -34.7  det=-0.01709  demanded dq=(    -45.2,    +107.3) deg/s
+r=0.336  q2= -33.0  det=-0.01634  demanded dq=(    -47.4,    +112.2) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.4158283]  Joint2: [-0.63640286]
+Joint Velocity: Joint1: [-0.72939337]  Joint2: [1.72599773]
+Actuator Force: Joint1: [-0.08036554]  Joint2: [0.10994316]
+Tip IMU: [-1.02470991 -1.32637567  9.81      ]
+Tip Linear Acceleration: [-1.29008127 -1.07004352  9.81      ]
+Tip Linear Velocity: [0.09163447 0.01242159 0.        ], Magnitude |v|=0.0925 m/s
+r=0.337  q2= -31.2  det=-0.01554  demanded dq=(    -49.8,    +117.8) deg/s
+r=0.339  q2= -29.3  det=-0.01469  demanded dq=(    -52.7,    +124.4) deg/s
+r=0.340  q2= -27.4  det=-0.01381  demanded dq=(    -55.9,    +131.8) deg/s
+r=0.342  q2= -25.5  det=-0.01291  demanded dq=(    -59.5,    +140.1) deg/s
+r=0.343  q2= -23.6  det=-0.01199  demanded dq=(    -63.5,    +149.4) deg/s
+r=0.344  q2= -21.6  det=-0.01106  demanded dq=(    -68.0,    +159.9) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.33316455]  Joint2: [-0.44898734]
+Joint Velocity: Joint1: [-0.98278138]  Joint2: [1.99413009]
+Actuator Force: Joint1: [-0.1250027]  Joint2: [0.10258916]
+Tip IMU: [-0.95574049 -1.80506407  9.81      ]
+Tip Linear Acceleration: [-1.1579375 -1.682521   9.81     ]
+Tip Linear Velocity: [ 0.08181215 -0.03506217  0.        ], Magnitude |v|=0.0890 m/s
+r=0.345  q2= -19.7  det=-0.01012  demanded dq=(    -73.2,    +171.7) deg/s
+r=0.346  q2= -17.8  det=-0.00917  demanded dq=(    -78.9,    +185.0) deg/s
+r=0.347  q2= -15.9  det=-0.00821  demanded dq=(    -85.3,    +199.9) deg/s
+r=0.347  q2= -14.0  det=-0.00724  demanded dq=(    -92.3,    +216.2) deg/s
+r=0.348  q2= -12.0  det=-0.00626  demanded dq=(    -99.7,    +233.3) deg/s
+r=0.349  q2= -10.1  det=-0.00527  demanded dq=(   -106.8,    +249.7) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.21328214]  Joint2: [-0.24929943]
+Joint Velocity: Joint1: [-1.51278653]  Joint2: [2.03388728]
+Actuator Force: Joint1: [-0.19234818]  Joint2: [0.09031235]
+Tip IMU: [-0.88652602 -1.77425803  9.81      ]
+Tip Linear Acceleration: [-0.94984121 -1.74118397  9.81      ]
+Tip Linear Velocity: [ 0.06685663 -0.21758738  0.        ], Magnitude |v|=0.2276 m/s
+r=0.349  q2=  -8.2  det=-0.00428  demanded dq=(   -111.9,    +261.5) deg/s
+r=0.349  q2=  -6.3  det=-0.00328  demanded dq=(   -111.5,    +260.5) deg/s
+r=0.350  q2=  -4.4  det=-0.00228  demanded dq=(    -99.4,    +232.2) deg/s
+r=0.350  q2=  -2.4  det=-0.00128  demanded dq=(    -68.0,    +158.7) deg/s
+r=0.350  q2=  -0.5  det=-0.00027  demanded dq=(    -16.0,     +37.4) deg/s
+r=0.350  q2=  +0.1  det=+0.00004  demanded dq=(     +2.5,      -5.7) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.05946397]  Joint2: [-0.06409426]
+Joint Velocity: Joint1: [-1.07993519]  Joint2: [1.20774786]
+Actuator Force: Joint1: [0.19301364]  Joint2: [0.06974804]
+Tip IMU: [-0.50525753  3.62242671  9.81      ]
+Tip Linear Acceleration: [-0.48847929  3.62472736  9.81      ]
+Tip Linear Velocity: [ 0.01292465 -0.19643359  0.        ], Magnitude |v|=0.1969 m/s
+r=0.350  q2=  -0.0  det=-0.00001  demanded dq=(     -0.4,      +0.9) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.1,      -0.1) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.01939939]  Joint2: [-0.01244619]
+Joint Velocity: Joint1: [-0.07680251]  Joint2: [0.19508178]
+Actuator Force: Joint1: [-0.01070692]  Joint2: [0.05384198]
+Tip IMU: [-0.01012829  0.41017772  9.81      ]
+Tip Linear Acceleration: [-0.01298007  0.41009738  9.81      ]
+Tip Linear Velocity: [0.0001746  0.00238385 0.        ], Magnitude |v|=0.0024 m/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.01761975]  Joint2: [-0.00396392]
+Joint Velocity: Joint1: [-0.00235503]  Joint2: [0.03082538]
+Actuator Force: Joint1: [-0.04956162]  Joint2: [0.0484531]
+Tip IMU: [-1.30423149e-04 -9.18130227e-02  9.81000000e+00]
+Tip Linear Acceleration: [ 1.12333235e-03 -9.18062431e-02  9.81000000e+00]
+Tip Linear Velocity: [-5.00175330e-05  3.79922261e-03  0.00000000e+00], Magnitude |v|=0.0038 m/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      -0.0) deg/s
+r=0.350  q2=  -0.0  det=-0.00000  demanded dq=(     -0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+-----arm is moving-----
+Joint Position: Joint1: [0.01740348]  Joint2: [-0.00268169]
+Joint Velocity: Joint1: [-0.00218713]  Joint2: [0.00581183]
+Actuator Force: Joint1: [-0.04540426]  Joint2: [0.04782188]
+Tip IMU: [-3.89719036e-06 -2.24261300e-03  9.81000000e+00]
+Tip Linear Acceleration: [ 2.91173363e-05 -2.24242736e-03  9.81000000e+00]
+Tip Linear Velocity: [-3.91643991e-07  1.06284399e-04  0.00000000e+00], Magnitude |v|=0.0001 m/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+r=0.350  q2=  +0.0  det=+0.00000  demanded dq=(     +0.0,      +0.0) deg/s
+settled... Frame Pos (Ground Truth): t= 3.168s  Base=(+0.000,+0.000,+0.025)  Joint 1=(+0.000,+0.000,+0.060)  Joint 2=(+0.200,+0.003,+0.090)  Cube=(+0.500,-0.000,+0.020)  Bob (End-effector)=(+0.350,+0.006,+0.090)
